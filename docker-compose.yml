@@ -1,0 +1,108 @@
+version: "3.5"
+services:
+
+    nginx:
+        image: nginx:alpine
+        depends_on:
+            - php72
+        networks:
+            - frontend
+        ports:
+            - 80:80
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./nginx/conf.d:/etc/nginx/conf.d:ro
+            - ./app:/app
+        deploy:
+            replicas: 2
+            restart_policy:
+                condition: on-failure
+                max_attempts: 3
+        environment:
+            # Support setting timezone through environment in image[nginx:alpine] by default
+            # https://github.com/nginxinc/docker-nginx/blob/master/mainline/alpine/Dockerfile#L131
+            TZ: Asia/Shanghai
+        ulimits:
+          nproc: 65535
+          nofile:
+            soft: 20000
+            hard: 40000
+
+    php72:
+        # build: 
+        #     context: ./php
+        #     args:
+        #         ALPINE_URL: mirror.tuna.tsinghua.edu.cn
+        image: milesphp:7.2-fpm-alpine
+        ports:
+            - 9000:9000
+        volumes:
+            - ./app:/app
+            - ./php/config/ini/php.ini:/usr/local/etc/php/php.ini
+            - ./php/config/ini/conf.d/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini
+        depends_on:
+            - mysql
+            - redis
+        networks:
+            - backend
+            - frontend
+        deploy:
+            replicas: 2
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+        environment:
+            TZ: Asia/Shanghai
+
+    mysql:
+        image: mysql:5.7.21
+        networks:
+            - backend
+        ports:
+            - 3306:3306
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./mysql/my.cnf:/etc/mysql/my.cnf:ro
+        secrets:
+            - mysql_root_password
+        environment:
+            TZ: Asia/Shanghai
+            MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+        deploy:
+            restart_policy:
+                condition: on-failure
+                max_attempts: 3
+            placement:
+                constraints:
+                    - node.role == manager
+
+    redis:
+        image: redis:alpine
+        networks:
+            - frontend
+        ports:
+            - 6379:6379
+        volumes:
+            - redis-data:/data
+            - ./redis/redis.conf:/redis.conf:ro
+        command: ["redis-server", "/redis.conf"]
+        deploy:
+            restart_policy:
+                condition: on-failure
+                max_attempts: 3
+            placement:
+                constraints:
+                    - node.role == manager
+
+networks:
+    frontend:
+    backend:
+
+volumes:
+    mysql-data:
+    redis-data:
+
+secrets:
+    mysql_root_password:
+        file: ./mysql/mysql_root_password.secret
