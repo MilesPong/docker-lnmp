@@ -2,7 +2,7 @@ version: "3.5"
 services:
 
     nginx:
-        image: nginx:alpine
+        image: nginx:1.13.9-alpine
         depends_on:
             - php72
         networks:
@@ -33,7 +33,7 @@ services:
         #     context: ./php/build-src/7.2/fpm
         #     args:
         #         ALPINE_URL: mirror.tuna.tsinghua.edu.cn
-        image: milespeng:7.2-fpm-alpine
+        image: milespeng/php:7.2-fpm-alpine
         ports:
             - 9000:9000
         volumes:
@@ -78,7 +78,7 @@ services:
                     - node.role == manager
 
     redis:
-        image: redis:alpine
+        image: redis:4.0.8-alpine
         networks:
             - frontend
         ports:
