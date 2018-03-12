@@ -30,10 +30,10 @@ services:
 
     php72:
         # build: 
-        #     context: ./php
+        #     context: ./php/build-src/7.2/fpm
         #     args:
         #         ALPINE_URL: mirror.tuna.tsinghua.edu.cn
-        image: milesphp:7.2-fpm-alpine
+        image: milespeng:7.2-fpm-alpine
         ports:
             - 9000:9000
         volumes:
