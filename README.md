@@ -1,23 +1,25 @@
-LNMP
-=====
+# LNMP
 
-## Prepare
+LNMP(Nginx, PHP, Mysql, Redis) service deploy through docker swarm mode.
+
+## Swarm mode
 
 ```bash
 docker swarm init
 ```
+
+*Notice: if using command through `docker-compose`, you may make some changes to this `docker-compose.yaml` file to adjust some settings like `secret`*
 
 ## Usage
 
 1. Create mysql password through docker secret
 
 ```bash
-cp mysql/mysql_root_password.secret.exmpale mysql/mysql_root_password.secret
-# change the password if you need
+$ echo "my-secret-pw" | docker secret create mysql_root_password -
 ```
 
-2. Build and start containers
+2. Deploy or update a stack
 
 ```bash
-docker-compose up -d --build
+$ docker stack deploy -c docker-compose.yml lnmp
 ```

@@ -105,4 +105,4 @@ volumes:
 
 secrets:
     mysql_root_password:
-        file: ./mysql/mysql_root_password.secret
+        external: true
