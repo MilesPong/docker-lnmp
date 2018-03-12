@@ -1,0 +1,3 @@
+[submodule "php/build-src"]
+	path = php/build-src
+	url = https://github.com/MilesPong/docker-php.git
