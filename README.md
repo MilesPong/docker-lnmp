@@ -55,6 +55,12 @@ $ docker run --rm -u $(id -u):$(id -g) -v $(pwd):/app -w /app milespeng/node:alp
 
 ### Ready to Go
 
+Boot the services:
+
+```bash
+$ docker-compose -f docker/docker-compose.yml up -d
+```
+
 Generate application key:
 
 ```bash
@@ -64,13 +70,17 @@ $ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 p
 Run migrations and seeders:
 
 ```bash
-$ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan migration --seed
-```
-
-Boot the services:
-
-```bash
-$ docker-compose -f docker/docker-compose.yml up -d
+$ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan migrate --seed
 ```
 
 Now if everything is going right, you can access the application via [http://localhost:8000](http://localhost:8000).
+
+## TODO
+
+Laravel **schedule** is not supported yet, but  it seems to be unnecessary for development.
+
+Also, you may want to modify `.env` as follow to make **queue** "work" in docker.
+
+```
+QUEUE_DRIVER=sync
+```
