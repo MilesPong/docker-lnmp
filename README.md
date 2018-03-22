@@ -16,7 +16,7 @@ An example to run Laravel application under LNMP(Nginx, PHP, Mysql, Redis) servi
 ### Configuration
 
 ```bash
-$ git clone https://github.com/MilesPong/indigo.git
+$ git clone --recurse-submodules https://github.com/MilesPong/indigo.git
 $ cd indigo
 $ cp .env.example .env
 ```
@@ -67,10 +67,28 @@ Generate application key:
 $ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan key:generate
 ```
 
+Create a symbolic link:
+
+```bash
+$ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan storage:link
+```
+
 Run migrations and seeders:
 
 ```bash
 $ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan migrate --seed
+```
+
+Create the first user:
+
+```bash
+$ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan user:add
+```
+
+(**Optional**) Import fake data for development:
+
+```bash
+$ docker-compose -f docker/docker-compose.yml run --no-deps --rm -w /app php72 php artisan db:seed --class=FakeDataSeeder
 ```
 
 Now if everything is going right, you can access the application via [http://localhost:8000](http://localhost:8000).
