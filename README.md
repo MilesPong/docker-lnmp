@@ -31,6 +31,8 @@ DB_HOST=mysql
 DB_DATABASE=laravel_indigo
 DB_USERNAME=root
 DB_PASSWORD=root
+# Log channel
+LOG_CHANNEL=single
 ```
 
 Change redis' host to `redis`, e.g. `REDIS_HOST=redis`.
